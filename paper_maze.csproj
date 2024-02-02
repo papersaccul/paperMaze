@@ -46,8 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DifficultyForm.cs">
-      <SubType>Form</SubType>
+    <Compile Include="ButtonAnimation\Animator.cs" />
+    <Compile Include="ButtonAnimation\Animation.cs" />
+    <Compile Include="pmRadionButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="uiDrawler.cs" />
+    <Compile Include="pmButton.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="MazeGame.cs">
       <SubType>Form</SubType>

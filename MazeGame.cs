@@ -1,9 +1,7 @@
-﻿using diff;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace paper_maze
@@ -23,22 +21,149 @@ namespace paper_maze
         private double enemyProbability = 0.003;
         private double enemyMovementProbability = 0.4;
         private int cellSize;
+        private int difficulty;
+        private bool isPaused = false;
 
-
-        public MazeGame(int difficulty)
+        public MazeGame()
         {
             InitializeComponent();
-            LoadMaze("level.txt");
-            GenerateCoinsAndEnemies();
-            InitializeGame(difficulty);
+
+
+            btnStart.Click += BtnStart_Click;
+
+            HideGameContent();
+            HideDifficultyForm();
+            ShowMainMenu();
+        }
+
+
+        //============================= UI Switch =============================
+        private void HideGameContent()
+        {
+            label1.Visible = false;
+            pictureBox1.Visible = false;
+        }
+
+        private void ShowGameContent()
+        {
+            label1.Visible = true;
+            pictureBox1.Visible = true;
             DrawMaze();
         }
+        private void ShowDifficultyForm()
+        {
+            lbMenuHeader.Text = "Choose a difficulty";
+            lbMenuHeader.Visible = true;
+
+            btnStart.Visible = false;
+
+            rbEasy.Visible = true;
+            rbMedium.Visible = true;
+            rbHard.Visible = true;
+
+            btnOk.Visible = true;
+            btnCancel.Visible = true;
+
+        }
+
+        private void HideDifficultyForm()
+        {
+            lbMenuHeader.Visible = false;
+            rbEasy.Visible = false;
+            rbMedium.Visible = false;
+            rbHard.Visible = false;
+
+            btnOk.Visible = false;
+            btnCancel.Visible = false;
+        }
+
+        private void HideMainMenu()
+        {
+            lbMenuHeader.Visible = false;
+            btnStart.Visible = false;
+            btnSettings.Visible = false;
+            btnAbout.Visible = false;
+            btnExit.Visible = false;
+        }
+
+        private void ShowMainMenu()
+        {
+            lbMenuHeader.Text = "Main Menu";
+            lbMenuHeader.Visible = true;
+            btnStart.Visible = true;
+            btnSettings.Visible = true;
+            btnAbout.Visible = true;
+            btnExit.Visible = true;
+        }
+
+        private void ShowPauseMenu()
+        {
+            isPaused = true;
+
+            HideGameContent();
+
+            lbMenuHeader.Text = "Pause";
+            lbMenuHeader.Visible = true;
+            btnResume.Visible = true;
+            btnSettings.Visible = true;
+            btnAbout.Visible = true;
+            btnExit.Visible = true;
+        }
+        private void HidePauseMenu()
+        {
+            isPaused = false;
+
+            ShowGameContent();
+
+            lbMenuHeader.Visible = false;
+            btnResume.Visible = false;
+            btnSettings.Visible = false;
+            btnAbout.Visible = false;
+            btnExit.Visible = false;
+        }
+
+        private void BtnStart_Click(object sender, EventArgs e)
+        {
+
+
+            HideMainMenu();
+            ShowDifficultyForm();
+
+            btnOk.Click += (s, a) => {
+
+                if (rbEasy.Checked)
+                    difficulty = 16;
+                else if (rbMedium.Checked)
+                    difficulty = 24;
+                else // rbHard.Checked
+                    difficulty = 40;
+
+                var maze = new Maze(difficulty, difficulty);
+                maze.DisplayAndSaveToFile("level.txt");
+
+                HideDifficultyForm();
+
+                LoadMaze("level.txt");
+                InitializeGame(difficulty);
+                ShowGameContent();
+
+            };
+
+            btnCancel.Click += (s, a) =>
+            {
+                HideDifficultyForm();
+                ShowMainMenu();
+            };
+        }
+
 
         private void InitializeGame(int difficulty)
         {
             playerHealth = 3;
             label1.Text = $"Coins: {coinsCollected} | Health: {playerHealth}";
             pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;
+
+            GenerateCoinsAndEnemies();
 
             if (difficulty < 30)
                 cellSize = 16;
@@ -50,88 +175,99 @@ namespace paper_maze
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             pictureBox1.Size = new Size(pictureBoxWidth, pictureBoxHeight + 44);
         }
+
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (levelComplete)
+
+            if (pictureBox1.Visible == true)
             {
-                MessageBox.Show($"Level complete! Coins collected: {coinsCollected}");
-                RestartGame();
-                return base.ProcessCmdKey(ref msg, keyData);
-            }
 
-            // Movement
-            int newPlayerX = playerX;
-            int newPlayerY = playerY;
 
-            switch (keyData)
-            {
-                case Keys.Up:
-                    newPlayerY--;
-                    break;
-                case Keys.Down:
-                    newPlayerY++;
-                    break;
-                case Keys.Left:
-                    newPlayerX--;
-                    break;
-                case Keys.Right:
-                    newPlayerX++;
-                    break;
-            }
-
-            ProcessEnemiesMovement();
-
-            // Check new pos
-            if (newPlayerX >= 0 && newPlayerX < maze.GetLength(1) && newPlayerY >= 0 && newPlayerY < maze.GetLength(0) && maze[newPlayerY, newPlayerX] != '1')
-            {
-                playerX = newPlayerX;
-                playerY = newPlayerY;
-
-                // Coin Check
-                if (maze[playerY, playerX] == 'C')
+                if (levelComplete)
                 {
-                    coinsCollected++;
-                    maze[playerY, playerX] = '0'; // Remove the coin
-                    coinsGenerated[playerY, playerX] = false;
-                    DrawMaze();
-                    label1.Text = $"Coins: {coinsCollected} | Health: {playerHealth}";
+                    MessageBox.Show($"Level complete! Coins collected: {coinsCollected}");
+                    RestartGame();
+                    return base.ProcessCmdKey(ref msg, keyData);
                 }
 
-                // Enemy Check
-                else if (maze[playerY, playerX] == 'E')
+                // Movement
+                int newPlayerX = playerX;
+                int newPlayerY = playerY;
+
+                switch (keyData)
                 {
-                    playerHealth--;
-                    if (playerHealth <= 0)
+                    case Keys.Up:
+                        newPlayerY--;
+                        break;
+                    case Keys.Down:
+                        newPlayerY++;
+                        break;
+                    case Keys.Left:
+                        newPlayerX--;
+                        break;
+                    case Keys.Right:
+                        newPlayerX++;
+                        break;
+                    case Keys.Escape:
+                        if (!isPaused)
+                            ShowPauseMenu();
+                        else HidePauseMenu();
+                        break;
+                }
+
+                ProcessEnemiesMovement();
+
+                // Check new pos
+                if (newPlayerX >= 0 && newPlayerX < maze.GetLength(1) && newPlayerY >= 0 && newPlayerY < maze.GetLength(0) && maze[newPlayerY, newPlayerX] != '1')
+                {
+                    playerX = newPlayerX;
+                    playerY = newPlayerY;
+
+                    // Coin Check
+                    if (maze[playerY, playerX] == 'C')
                     {
+                        coinsCollected++;
+                        maze[playerY, playerX] = '0'; // Remove the coin
+                        coinsGenerated[playerY, playerX] = false;
                         DrawMaze();
                         label1.Text = $"Coins: {coinsCollected} | Health: {playerHealth}";
-                        MessageBox.Show("Game over! Player health depleted.");
-                        RestartGame();
+                    }
+
+                    // Enemy Check
+                    else if (maze[playerY, playerX] == 'E')
+                    {
+                        playerHealth--;
+                        if (playerHealth <= 0)
+                        {
+                            DrawMaze();
+                            label1.Text = $"Coins: {coinsCollected} | Health: {playerHealth}";
+                            MessageBox.Show("Game over! Player health depleted.");
+                            RestartGame();
+                        }
+                        else
+                        {
+                            maze[playerY, playerX] = '0'; // Remove enemy
+                            DrawMaze();
+                            label1.Text = $"Coins: {coinsCollected} | Health: {playerHealth}";
+                        }
                     }
                     else
                     {
-                        maze[playerY, playerX] = '0'; // Remove enemy
                         DrawMaze();
-                        label1.Text = $"Coins: {coinsCollected} | Health: {playerHealth}";
                     }
-                }
-                else
-                {
-                    DrawMaze();
-                }
 
-                // Win Check
-                if (maze[playerY, playerX] == 'F')
-                {
-                    levelComplete = true;
-                    MessageBox.Show($"Level complete! Coins collected: {coinsCollected}");
-                    RestartGame();
+                    // Win Check
+                    if (maze[playerY, playerX] == 'F')
+                    {
+                        levelComplete = true;
+                        MessageBox.Show($"Level complete! Coins collected: {coinsCollected}");
+                        RestartGame();
+                    }
                 }
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
-
 
         private void LoadMaze(string filePath)
         {
@@ -280,7 +416,7 @@ namespace paper_maze
 
         private void DrawMaze()
         {
-           
+
             Bitmap bitmap = new Bitmap(maze.GetLength(1) * cellSize, maze.GetLength(0) * cellSize);
             using (Graphics g = Graphics.FromImage(bitmap))
             {
@@ -327,57 +463,12 @@ namespace paper_maze
             pictureBox1.Image = bitmap;
         }
 
-
-        // Temporarily here
-        private void InitializeComponent()
-        {
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.label1 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.SuspendLayout();
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(528, 601);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label1.Font = new System.Drawing.Font("Impact", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(0, 558);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(104, 43);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "label1";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
-            // 
-            // MazeGame
-            // 
-            this.ClientSize = new System.Drawing.Size(528, 601);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.pictureBox1);
-            this.Name = "MazeGame";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void pmButton1_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void rbHard_CheckedChanged(object sender, EventArgs e)
         {
 
         }
