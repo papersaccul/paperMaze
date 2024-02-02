@@ -8,6 +8,7 @@ namespace paper_maze
 {
     public partial class MazeGame : Form
     {
+        private string version = "0.1.4";
         private char[,] maze;
         private int playerX;
         private int playerY;
@@ -25,8 +26,6 @@ namespace paper_maze
         private bool isPaused = false;
         private bool isAbout = false;
 
-        private string version = "0.1.4";
-
         public MazeGame()
         {
             InitializeComponent();
@@ -43,8 +42,48 @@ namespace paper_maze
             ShowMainMenu();
         }
 
+        //============================= Button Click ==========================
+        private void BtnStart_Click(object sender, EventArgs e)
+        {
+            HideMainMenu();
+            ShowDifficultyForm();
+            this.BackColor = Color.FromArgb(255, 59, 66, 82); // #3b4252
+
+            difficulty = 2;
+
+            btnOk.Click += (s, a) =>
+            {
+
+                if (rbEasy.Checked)
+                    difficulty = 16;
+                else if (rbMedium.Checked)
+                    difficulty = 24;
+                else // rbHard.Checked
+                    difficulty = 32;
+
+
+
+                var maze = new Maze(difficulty, difficulty);
+                maze.DisplayAndSaveToFile("level.txt");
+
+                LoadMaze("level.txt");
+                InitializeGame(difficulty);
+                HideDifficultyForm();
+                ShowGameContent();
+
+            };
+
+            btnCancel.Click += (s, a) =>
+            {
+                HideDifficultyForm();
+                ShowMainMenu();
+            };
+        }
+
         private void BtnSettings_Click(object sender, EventArgs e)
         {
+            this.BackColor = Color.FromArgb(255, 59, 66, 82); // #3b4252
+
             isAbout = true;
 
             lbMenuHeader.Visible = true;
@@ -60,6 +99,8 @@ namespace paper_maze
 
         private void BtnAbout_Click(object sender, EventArgs e)
         {
+            this.BackColor = Color.FromArgb(255, 59, 66, 82); // #3b4252
+
             isAbout = true;
 
             lbMenuHeader.Visible = true;
@@ -102,22 +143,23 @@ namespace paper_maze
                 lbMenuText.Visible = false;
             }
             else Close();
-                
+
         }
 
         //============================= UI Switch =============================
         private void HideGameContent()
         {
             label1.Visible = false;
-            pictureBox1.Visible = false;
+            pbGameArea.Visible = false;
         }
 
         private void ShowGameContent()
         {
             label1.Visible = true;
-            pictureBox1.Visible = true;
+            pbGameArea.Visible = true;
             DrawMaze();
         }
+
         private void ShowDifficultyForm()
         {
             lbMenuHeader.Text = "Choose a difficulty";
@@ -156,6 +198,8 @@ namespace paper_maze
 
         private void ShowMainMenu()
         {
+            this.BackColor = Color.FromArgb(255, 46, 52, 64); // #2e3440
+
             lbMenuText.Visible = false;
             lbMenuHeader.Text = "Main Menu";
             lbMenuHeader.Visible = true;
@@ -178,6 +222,7 @@ namespace paper_maze
             btnAbout.Visible = true;
             btnExit.Visible = true;
         }
+
         private void HidePauseMenu()
         {
             isPaused = false;
@@ -189,62 +234,123 @@ namespace paper_maze
             btnExit.Visible = false;
         }
 
-        private void BtnStart_Click(object sender, EventArgs e)
-        {
-            HideMainMenu();
-            ShowDifficultyForm();
-
-            btnOk.Click += (s, a) => {
-
-                if (rbEasy.Checked)
-                    difficulty = 16;
-                else if (rbMedium.Checked)
-                    difficulty = 24;
-                else // rbHard.Checked
-                    difficulty = 40;
-
-                var maze = new Maze(difficulty, difficulty);
-                maze.DisplayAndSaveToFile("level.txt");
-
-                HideDifficultyForm();
-
-                LoadMaze("level.txt");
-                InitializeGame(difficulty);
-                ShowGameContent();
-
-            };
-
-            btnCancel.Click += (s, a) =>
-            {
-                HideDifficultyForm();
-                ShowMainMenu();
-            };
-        }
-
-
+        //============================= Init ===============================
         private void InitializeGame(int difficulty)
         {
             playerHealth = 3;
             label1.Text = $"Coins: {coinsCollected} | Health: {playerHealth}";
-            pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;
+            pbGameArea.SizeMode = PictureBoxSizeMode.AutoSize;
 
             GenerateCoinsAndEnemies();
 
             if (difficulty < 30)
                 cellSize = 16;
-            else cellSize = 10;
+            else cellSize = 14;
 
             int pictureBoxWidth = cellSize * maze.GetLength(1);
             int pictureBoxHeight = cellSize * maze.GetLength(0);
             this.AutoSize = true;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            pictureBox1.Size = new Size(pictureBoxWidth, pictureBoxHeight + 44);
+            pbGameArea.Size = new Size(pictureBoxWidth, pictureBoxHeight + 44);
         }
 
+        private void LoadMaze(string filePath)
+        {
+            try
+            {
+                string[] lines = File.ReadAllLines(filePath);
+                int height = lines.Length;
+                int width = lines[0].Length;
+                maze = new char[height, width];
+                coinsGenerated = new bool[height, width];
+
+                totalCoins = 0;
+                coinsCollected = 0;
+                levelComplete = false;
+
+                bool firstZeroFound = false;
+
+                for (int i = 0; i < height; i++)
+                {
+                    for (int j = 0; j < width; j++)
+                    {
+                        maze[i, j] = lines[i][j];
+
+                        // Player Spawnpoint
+                        if (maze[i, j] == 'P')
+                        {
+                            playerX = j;
+                            playerY = i;
+                        }
+                        // Coins
+                        else if (maze[i, j] == 'C')
+                        {
+                            totalCoins++;
+                        }
+                        // Replace the first '0' with 'P'
+                        else if (maze[i, j] == '0' && !firstZeroFound)
+                        {
+                            maze[i, j] = 'P';
+                            playerX = j;
+                            playerY = i;
+                            firstZeroFound = true;
+                        }
+                        // Replace the last '0' with 'F'
+                        else if (maze[i, j] == '0' && j == width - 2 && i == height - 2)
+                        {
+                            maze[i, j] = 'F';
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading maze: {ex.Message}");
+                RestartGame();
+            }
+        }
+
+        private void GenerateCoinsAndEnemies()
+        {
+            totalCoins = 0;
+            for (int i = 0; i < maze.GetLength(0); i++)
+            {
+                for (int j = 0; j < maze.GetLength(1); j++)
+                {
+                    double randomValue = random.NextDouble();
+
+                    if (maze[i, j] == '0')
+                    {
+                        totalCoins++;
+
+                        // Place a coin
+                        if (randomValue < coinProbability)
+                        {
+                            maze[i, j] = 'C';
+                        }
+                        // Place an enemy
+                        else if (randomValue < coinProbability + enemyProbability)
+                        {
+                            maze[i, j] = 'E';
+                        }
+                    }
+                }
+            }
+        }
+
+        private void RestartGame()
+        {
+            levelComplete = false;
+            coinsCollected = 0;
+            playerHealth = 3;
+            Application.Restart();
+        }
+
+        //============================= Update =============================
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
 
-            if (pictureBox1.Visible == true)
+            if (pbGameArea.Visible == true)
             {
 
 
@@ -334,95 +440,16 @@ namespace paper_maze
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private void LoadMaze(string filePath)
+        private List<(int, int)> GetPossibleMoves(int y, int x)
         {
-            try
-            {
-                string[] lines = File.ReadAllLines(filePath);
-                int height = lines.Length;
-                int width = lines[0].Length;
-                maze = new char[height, width];
-                coinsGenerated = new bool[height, width];
+            List<(int, int)> possibleMoves = new List<(int, int)>();
 
-                totalCoins = 0;
-                coinsCollected = 0;
-                levelComplete = false;
+            if (IsValidMove(y - 1, x)) possibleMoves.Add((y - 1, x)); // Up
+            if (IsValidMove(y + 1, x)) possibleMoves.Add((y + 1, x)); // Down
+            if (IsValidMove(y, x - 1)) possibleMoves.Add((y, x - 1)); // Left
+            if (IsValidMove(y, x + 1)) possibleMoves.Add((y, x + 1)); // Right
 
-                bool firstZeroFound = false;
-
-                for (int i = 0; i < height; i++)
-                {
-                    for (int j = 0; j < width; j++)
-                    {
-                        maze[i, j] = lines[i][j];
-
-                        // Player Spawnpoint
-                        if (maze[i, j] == 'P')
-                        {
-                            playerX = j;
-                            playerY = i;
-                        }
-                        // Coins
-                        else if (maze[i, j] == 'C')
-                        {
-                            totalCoins++;
-                        }
-                        // Replace the first '0' with 'P'
-                        else if (maze[i, j] == '0' && !firstZeroFound)
-                        {
-                            maze[i, j] = 'P';
-                            playerX = j;
-                            playerY = i;
-                            firstZeroFound = true;
-                        }
-                        // Replace the last '0' with 'F'
-                        else if (maze[i, j] == '0' && j == width - 2 && i == height - 2)
-                        {
-                            maze[i, j] = 'F';
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error loading maze: {ex.Message}");
-                RestartGame();
-            }
-        }
-
-        private void RestartGame()
-        {
-            levelComplete = false;
-            coinsCollected = 0;
-            playerHealth = 3;
-            Application.Restart();
-        }
-        private void GenerateCoinsAndEnemies()
-        {
-            totalCoins = 0;
-            for (int i = 0; i < maze.GetLength(0); i++)
-            {
-                for (int j = 0; j < maze.GetLength(1); j++)
-                {
-                    double randomValue = random.NextDouble();
-
-                    if (maze[i, j] == '0')
-                    {
-                        totalCoins++;
-
-                        // Place a coin
-                        if (randomValue < coinProbability)
-                        {
-                            maze[i, j] = 'C';
-                        }
-                        // Place an enemy
-                        else if (randomValue < coinProbability + enemyProbability)
-                        {
-                            maze[i, j] = 'E';
-                        }
-                    }
-                }
-            }
+            return possibleMoves;
         }
 
         private void ProcessEnemiesMovement()
@@ -462,23 +489,12 @@ namespace paper_maze
             }
         }
 
-        private List<(int, int)> GetPossibleMoves(int y, int x)
-        {
-            List<(int, int)> possibleMoves = new List<(int, int)>();
-
-            if (IsValidMove(y - 1, x)) possibleMoves.Add((y - 1, x)); // Up
-            if (IsValidMove(y + 1, x)) possibleMoves.Add((y + 1, x)); // Down
-            if (IsValidMove(y, x - 1)) possibleMoves.Add((y, x - 1)); // Left
-            if (IsValidMove(y, x + 1)) possibleMoves.Add((y, x + 1)); // Right
-
-            return possibleMoves;
-        }
-
         private bool IsValidMove(int y, int x)
         {
             return y >= 0 && y < maze.GetLength(0) && x >= 0 && x < maze.GetLength(1) && maze[y, x] == '0';
         }
 
+        //============================= Render ===============================
         private void DrawMaze()
         {
 
@@ -525,17 +541,8 @@ namespace paper_maze
                 }
             }
 
-            pictureBox1.Image = bitmap;
+            pbGameArea.Image = bitmap;
         }
 
-        private void pmButton1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void rbHard_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }

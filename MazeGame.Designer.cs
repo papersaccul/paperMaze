@@ -22,12 +22,12 @@ namespace paper_maze
             base.Dispose(disposing);
         }
 
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pbGameArea;
         private System.Windows.Forms.Label label1;
 
         private void InitializeComponent()
         {
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pbGameArea = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.lbMenuHeader = new System.Windows.Forms.Label();
             this.lbMenuText = new System.Windows.Forms.Label();
@@ -41,19 +41,19 @@ namespace paper_maze
             this.btnExit = new paper_maze.pmButton();
             this.btnAbout = new paper_maze.pmButton();
             this.btnSettings = new paper_maze.pmButton();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbGameArea)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
             // 
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(524, 601);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
+            this.pbGameArea.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.pbGameArea.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pbGameArea.Location = new System.Drawing.Point(0, 0);
+            this.pbGameArea.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
+            this.pbGameArea.Name = "pictureBox1";
+            this.pbGameArea.Size = new System.Drawing.Size(524, 601);
+            this.pbGameArea.TabIndex = 0;
+            this.pbGameArea.TabStop = false;
             // 
             // label1
             // 
@@ -104,7 +104,6 @@ namespace paper_maze
             this.rbHard.TabIndex = 22;
             this.rbHard.Text = "Hard";
             this.rbHard.UseVisualStyleBackColor = false;
-            this.rbHard.CheckedChanged += new System.EventHandler(this.rbHard_CheckedChanged);
             // 
             // rbMedium
             // 
@@ -191,7 +190,6 @@ namespace paper_maze
             this.btnOk.UseRippleEffect = true;
             this.btnOk.UseVisualStyleBackColor = false;
             this.btnOk.UseZoomEffectOnHover = true;
-            this.btnOk.Click += new System.EventHandler(this.pmButton1_Click);
             // 
             // btnStart
             // 
@@ -357,10 +355,10 @@ namespace paper_maze
             this.Controls.Add(this.lbMenuHeader);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lbMenuText);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.pbGameArea);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "MazeGame";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbGameArea)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
