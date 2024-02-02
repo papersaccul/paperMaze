@@ -23,6 +23,9 @@ namespace paper_maze
         private int cellSize;
         private int difficulty;
         private bool isPaused = false;
+        private bool isAbout = false;
+
+        private string version = "0.1.4";
 
         public MazeGame()
         {
@@ -30,12 +33,77 @@ namespace paper_maze
 
 
             btnStart.Click += BtnStart_Click;
+            btnSettings.Click += BtnSettings_Click;
+            btnAbout.Click += BtnAbout_Click;
+            btnResume.Click += BtnResume_Click;
+            btnExit.Click += BtnExit_Click;
 
             HideGameContent();
             HideDifficultyForm();
             ShowMainMenu();
         }
 
+        private void BtnSettings_Click(object sender, EventArgs e)
+        {
+            isAbout = true;
+
+            lbMenuHeader.Visible = true;
+            btnResume.Visible = false;
+            btnStart.Visible = false;
+            btnSettings.Visible = false;
+            btnAbout.Visible = false;
+            lbMenuText.Visible = true;
+
+            lbMenuHeader.Text = "Guide";
+            lbMenuText.Text = $"Arrows or WASD for movement,\nEsc for pause,\nYellow cells - coins,\nRed cells - enemies.\nGreen cell - finish";
+        }
+
+        private void BtnAbout_Click(object sender, EventArgs e)
+        {
+            isAbout = true;
+
+            lbMenuHeader.Visible = true;
+            btnResume.Visible = false;
+            btnStart.Visible = false;
+            btnSettings.Visible = false;
+            btnAbout.Visible = false;
+            lbMenuText.Visible = true;
+
+            lbMenuHeader.Text = "About";
+            lbMenuText.Text = $"Version {version}\n\n https://github.com/papersaccul";
+        }
+
+        private void BtnResume_Click(object sender, EventArgs e)
+        {
+            HidePauseMenu();
+            ShowGameContent();
+        }
+
+        private void BtnExit_Click(object sender, EventArgs e)
+        {
+            if (isAbout && isPaused)
+            {
+                ShowPauseMenu();
+                lbMenuText.Visible = false;
+
+                isAbout = false;
+            }
+            else if (isPaused && !isAbout)
+            {
+                HidePauseMenu();
+                HideDifficultyForm();
+                ShowMainMenu();
+                this.Size = new Size(540, 640);
+            }
+            else if (!isPaused && isAbout)
+            {
+                isAbout = false;
+                ShowMainMenu();
+                lbMenuText.Visible = false;
+            }
+            else Close();
+                
+        }
 
         //============================= UI Switch =============================
         private void HideGameContent()
@@ -88,6 +156,7 @@ namespace paper_maze
 
         private void ShowMainMenu()
         {
+            lbMenuText.Visible = false;
             lbMenuHeader.Text = "Main Menu";
             lbMenuHeader.Visible = true;
             btnStart.Visible = true;
@@ -113,8 +182,6 @@ namespace paper_maze
         {
             isPaused = false;
 
-            ShowGameContent();
-
             lbMenuHeader.Visible = false;
             btnResume.Visible = false;
             btnSettings.Visible = false;
@@ -124,8 +191,6 @@ namespace paper_maze
 
         private void BtnStart_Click(object sender, EventArgs e)
         {
-
-
             HideMainMenu();
             ShowDifficultyForm();
 

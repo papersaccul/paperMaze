@@ -30,6 +30,7 @@ namespace paper_maze
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.lbMenuHeader = new System.Windows.Forms.Label();
+            this.lbMenuText = new System.Windows.Forms.Label();
             this.rbHard = new paper_maze.pmRadioButton();
             this.rbMedium = new paper_maze.pmRadioButton();
             this.rbEasy = new paper_maze.pmRadioButton();
@@ -50,7 +51,7 @@ namespace paper_maze
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(528, 601);
+            this.pictureBox1.Size = new System.Drawing.Size(524, 601);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
@@ -72,33 +73,47 @@ namespace paper_maze
             this.lbMenuHeader.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lbMenuHeader.Font = new System.Drawing.Font("Inter", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbMenuHeader.ForeColor = System.Drawing.Color.White;
-            this.lbMenuHeader.Location = new System.Drawing.Point(12, 155);
+            this.lbMenuHeader.Location = new System.Drawing.Point(10, 155);
             this.lbMenuHeader.Name = "lbMenuHeader";
             this.lbMenuHeader.Size = new System.Drawing.Size(504, 43);
             this.lbMenuHeader.TabIndex = 12;
             this.lbMenuHeader.Text = "MenuHeader";
             this.lbMenuHeader.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // lbMenuText
+            // 
+            this.lbMenuText.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.lbMenuText.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbMenuText.ForeColor = System.Drawing.Color.White;
+            this.lbMenuText.Location = new System.Drawing.Point(10, 207);
+            this.lbMenuText.Name = "lbMenuText";
+            this.lbMenuText.Size = new System.Drawing.Size(504, 134);
+            this.lbMenuText.TabIndex = 2;
+            this.lbMenuText.Text = "lbMenuText";
+            this.lbMenuText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // rbHard
             // 
+            this.rbHard.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.rbHard.BackColor = System.Drawing.Color.White;
             this.rbHard.Font = new System.Drawing.Font("Inter", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rbHard.ForeColor = System.Drawing.Color.White;
-            this.rbHard.Location = new System.Drawing.Point(207, 248);
+            this.rbHard.Location = new System.Drawing.Point(205, 248);
             this.rbHard.Name = "rbHard";
             this.rbHard.Size = new System.Drawing.Size(150, 30);
             this.rbHard.TabIndex = 22;
-            this.rbHard.TabStop = true;
             this.rbHard.Text = "Hard";
             this.rbHard.UseVisualStyleBackColor = false;
             this.rbHard.CheckedChanged += new System.EventHandler(this.rbHard_CheckedChanged);
             // 
             // rbMedium
             // 
+            this.rbMedium.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.rbMedium.BackColor = System.Drawing.Color.White;
+            this.rbMedium.Checked = true;
             this.rbMedium.Font = new System.Drawing.Font("Inter", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rbMedium.ForeColor = System.Drawing.Color.White;
-            this.rbMedium.Location = new System.Drawing.Point(207, 282);
+            this.rbMedium.Location = new System.Drawing.Point(205, 282);
             this.rbMedium.Name = "rbMedium";
             this.rbMedium.Size = new System.Drawing.Size(150, 30);
             this.rbMedium.TabIndex = 21;
@@ -108,14 +123,14 @@ namespace paper_maze
             // 
             // rbEasy
             // 
+            this.rbEasy.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.rbEasy.BackColor = System.Drawing.Color.White;
             this.rbEasy.Font = new System.Drawing.Font("Inter", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rbEasy.ForeColor = System.Drawing.Color.White;
-            this.rbEasy.Location = new System.Drawing.Point(207, 318);
+            this.rbEasy.Location = new System.Drawing.Point(205, 318);
             this.rbEasy.Name = "rbEasy";
             this.rbEasy.Size = new System.Drawing.Size(150, 30);
             this.rbEasy.TabIndex = 20;
-            this.rbEasy.TabStop = true;
             this.rbEasy.Text = "Easy";
             this.rbEasy.UseVisualStyleBackColor = false;
             // 
@@ -134,7 +149,7 @@ namespace paper_maze
             this.btnCancel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnCancel.Font = new System.Drawing.Font("Inter", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCancel.ForeColor = System.Drawing.Color.Black;
-            this.btnCancel.Location = new System.Drawing.Point(259, 388);
+            this.btnCancel.Location = new System.Drawing.Point(257, 388);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.RippleColor = System.Drawing.Color.Black;
             this.btnCancel.Rounding = 45;
@@ -163,7 +178,7 @@ namespace paper_maze
             this.btnOk.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnOk.Font = new System.Drawing.Font("Inter", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnOk.ForeColor = System.Drawing.Color.Black;
-            this.btnOk.Location = new System.Drawing.Point(102, 388);
+            this.btnOk.Location = new System.Drawing.Point(100, 388);
             this.btnOk.Name = "btnOk";
             this.btnOk.RippleColor = System.Drawing.Color.Black;
             this.btnOk.Rounding = 45;
@@ -193,7 +208,7 @@ namespace paper_maze
             this.btnStart.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnStart.Font = new System.Drawing.Font("Inter", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnStart.ForeColor = System.Drawing.Color.Black;
-            this.btnStart.Location = new System.Drawing.Point(184, 218);
+            this.btnStart.Location = new System.Drawing.Point(182, 218);
             this.btnStart.Name = "btnStart";
             this.btnStart.RippleColor = System.Drawing.Color.Black;
             this.btnStart.Rounding = 45;
@@ -222,7 +237,7 @@ namespace paper_maze
             this.btnResume.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnResume.Font = new System.Drawing.Font("Inter", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResume.ForeColor = System.Drawing.Color.Black;
-            this.btnResume.Location = new System.Drawing.Point(184, 218);
+            this.btnResume.Location = new System.Drawing.Point(182, 218);
             this.btnResume.Name = "btnResume";
             this.btnResume.RippleColor = System.Drawing.Color.Black;
             this.btnResume.Rounding = 45;
@@ -252,7 +267,7 @@ namespace paper_maze
             this.btnExit.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnExit.Font = new System.Drawing.Font("Inter", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnExit.ForeColor = System.Drawing.Color.Black;
-            this.btnExit.Location = new System.Drawing.Point(184, 356);
+            this.btnExit.Location = new System.Drawing.Point(182, 356);
             this.btnExit.Name = "btnExit";
             this.btnExit.RippleColor = System.Drawing.Color.Black;
             this.btnExit.Rounding = 45;
@@ -261,10 +276,10 @@ namespace paper_maze
             this.btnExit.TabIndex = 16;
             this.btnExit.Text = "Exit";
             this.btnExit.TextHover = null;
-            this.btnExit.UseDownPressEffectOnClick = false;
+            this.btnExit.UseDownPressEffectOnClick = true;
             this.btnExit.UseRippleEffect = true;
             this.btnExit.UseVisualStyleBackColor = false;
-            this.btnExit.UseZoomEffectOnHover = true;
+            this.btnExit.UseZoomEffectOnHover = false;
             // 
             // btnAbout
             // 
@@ -281,7 +296,7 @@ namespace paper_maze
             this.btnAbout.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnAbout.Font = new System.Drawing.Font("Inter", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAbout.ForeColor = System.Drawing.Color.Black;
-            this.btnAbout.Location = new System.Drawing.Point(184, 310);
+            this.btnAbout.Location = new System.Drawing.Point(182, 310);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.RippleColor = System.Drawing.Color.Black;
             this.btnAbout.Rounding = 45;
@@ -310,14 +325,14 @@ namespace paper_maze
             this.btnSettings.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnSettings.Font = new System.Drawing.Font("Inter", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSettings.ForeColor = System.Drawing.Color.Black;
-            this.btnSettings.Location = new System.Drawing.Point(184, 264);
+            this.btnSettings.Location = new System.Drawing.Point(182, 264);
             this.btnSettings.Name = "btnSettings";
             this.btnSettings.RippleColor = System.Drawing.Color.Black;
             this.btnSettings.Rounding = 45;
             this.btnSettings.RoundingEnable = true;
             this.btnSettings.Size = new System.Drawing.Size(150, 40);
             this.btnSettings.TabIndex = 14;
-            this.btnSettings.Text = "Settings";
+            this.btnSettings.Text = "Guide";
             this.btnSettings.TextHover = null;
             this.btnSettings.UseDownPressEffectOnClick = false;
             this.btnSettings.UseRippleEffect = true;
@@ -328,7 +343,7 @@ namespace paper_maze
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(52)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(528, 601);
+            this.ClientSize = new System.Drawing.Size(524, 601);
             this.Controls.Add(this.rbHard);
             this.Controls.Add(this.rbMedium);
             this.Controls.Add(this.rbEasy);
@@ -341,6 +356,7 @@ namespace paper_maze
             this.Controls.Add(this.btnSettings);
             this.Controls.Add(this.lbMenuHeader);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.lbMenuText);
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "MazeGame";
@@ -366,6 +382,7 @@ namespace paper_maze
         private pmRadioButton rbEasy;
         private pmRadioButton rbMedium;
         private pmRadioButton rbHard;
+        private System.Windows.Forms.Label lbMenuText;
     }
 }
 
