@@ -12,24 +12,31 @@ namespace paper_maze
         private char[,] maze;
         private int playerX;
         private int playerY;
+
         private int coinsCollected;
         private int totalCoins;
         private int playerHealth;
         private bool levelComplete;
         private bool[,] coinsGenerated;
         private Random random = new Random();
+        Timer gameTimer = new Timer();
         private double coinProbability = 0.03;
         private double enemyProbability = 0.003;
         private double enemyMovementProbability = 0.4;
+
         private int cellSize;
         private int difficulty;
         private bool isPaused = false;
         private bool isAbout = false;
+        private bool isStarted = false;
 
         public MazeGame()
         {
             InitializeComponent();
 
+            gameTimer = new Timer();
+            gameTimer.Interval = 50; // 20fps lock
+            gameTimer.Tick += GameTick;
 
             btnStart.Click += BtnStart_Click;
             btnSettings.Click += BtnSettings_Click;
@@ -40,6 +47,14 @@ namespace paper_maze
             HideGameContent();
             HideDifficultyForm();
             ShowMainMenu();
+
+            while (isStarted)
+            {
+                if (isPaused)
+                    gameTimer.Stop();
+                else
+                    gameTimer.Start();
+            }
         }
 
         //============================= Button Click ==========================
@@ -48,8 +63,6 @@ namespace paper_maze
             HideMainMenu();
             ShowDifficultyForm();
             this.BackColor = Color.FromArgb(255, 59, 66, 82); // #3b4252
-
-            difficulty = 2;
 
             btnOk.Click += (s, a) =>
             {
@@ -70,6 +83,7 @@ namespace paper_maze
                 InitializeGame(difficulty);
                 HideDifficultyForm();
                 ShowGameContent();
+                gameTimer.Start();
 
             };
 
@@ -126,7 +140,6 @@ namespace paper_maze
             {
                 ShowPauseMenu();
                 lbMenuText.Visible = false;
-
                 isAbout = false;
             }
             else if (isPaused && !isAbout)
@@ -386,8 +399,6 @@ namespace paper_maze
                         break;
                 }
 
-                ProcessEnemiesMovement();
-
                 // Check new pos
                 if (newPlayerX >= 0 && newPlayerX < maze.GetLength(1) && newPlayerY >= 0 && newPlayerY < maze.GetLength(0) && maze[newPlayerY, newPlayerX] != '1')
                 {
@@ -492,6 +503,12 @@ namespace paper_maze
         private bool IsValidMove(int y, int x)
         {
             return y >= 0 && y < maze.GetLength(0) && x >= 0 && x < maze.GetLength(1) && maze[y, x] == '0';
+        }
+
+        private void GameTick(object sender, EventArgs e)
+        {
+            ProcessEnemiesMovement();
+            DrawMaze();
         }
 
         //============================= Render ===============================
