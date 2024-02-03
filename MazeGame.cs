@@ -8,7 +8,12 @@ namespace paper_maze
 {
     public partial class MazeGame : Form
     {
-        private string version = "0.1.4";
+        private string version = "0.1.5";
+
+        private Color targetColor;
+        private Timer colorChangeTimer;
+        private const double colorChangeSpeed = 0.2f;
+
         private char[,] maze;
         private int playerX;
         private int playerY;
@@ -35,13 +40,21 @@ namespace paper_maze
         private double playerVisualY;
         private double playerInterpolationFactor = 0.5;
 
+        private MazeGenerator mazeGenerator;
+
         public MazeGame()
         {
             InitializeComponent();
 
+            mazeGenerator = new MazeGenerator();
+
             gameTimer = new Timer();
             gameTimer.Interval = 16; // 62.5fps lock
             gameTimer.Tick += GameTick;
+
+            colorChangeTimer = new Timer();
+            colorChangeTimer.Interval = 16; // ~62.5fps
+            colorChangeTimer.Tick += ColorChangeTimer_Tick;
 
             btnStart.Click += BtnStart_Click;
             btnSettings.Click += BtnSettings_Click;
@@ -67,25 +80,22 @@ namespace paper_maze
         {
             HideMainMenu();
             ShowDifficultyForm();
-            this.BackColor = Color.FromArgb(255, 59, 66, 82); // #3b4252
+            SmoothBackgroundColorTransition(Color.FromArgb(255, 59, 66, 82)); // #3b4252
+
 
             btnOk.Click += (s, a) =>
             {
-                this.BackColor = Color.FromArgb(255, 216, 222, 223); // #2e3440 
-
-                if (rbEasy.Checked)
-                    difficulty = 16;
-                else if (rbMedium.Checked)
-                    difficulty = 24;
-                else // rbHard.Checked
-                    difficulty = 32;
-
+                SmoothBackgroundColorTransition(Color.FromArgb(255, 216, 222, 223)); // #2e3440 
+                    if (rbEasy.Checked)
+                        difficulty = 16;
+                    else if (rbMedium.Checked)
+                        difficulty = 24;
+                    else // rbHard.Checked
+                        difficulty = 32;
 
 
-                var maze = new Maze(difficulty, difficulty);
-                maze.DisplayAndSaveToFile("level.txt");
 
-                LoadMaze("level.txt");
+                LoadMaze(mazeGenerator.GenerateMaze(difficulty, difficulty));
                 InitializeGame(difficulty);
                 HideDifficultyForm();
                 ShowGameContent();
@@ -102,7 +112,7 @@ namespace paper_maze
 
         private void BtnSettings_Click(object sender, EventArgs e)
         {
-            this.BackColor = Color.FromArgb(255, 59, 66, 82); // #3b4252
+            SmoothBackgroundColorTransition(Color.FromArgb(255, 59, 66, 82)); // #3b4252
 
             isAbout = true;
 
@@ -119,7 +129,7 @@ namespace paper_maze
 
         private void BtnAbout_Click(object sender, EventArgs e)
         {
-            this.BackColor = Color.FromArgb(255, 59, 66, 82); // #3b4252
+            SmoothBackgroundColorTransition(Color.FromArgb(255, 59, 66, 82)); // #3b4252
 
             isAbout = true;
 
@@ -217,7 +227,7 @@ namespace paper_maze
 
         private void ShowMainMenu()
         {
-            this.BackColor = Color.FromArgb(255, 46, 52, 64); // #2e3440
+            SmoothBackgroundColorTransition(Color.FromArgb(255, 46, 52, 64)); // #2e3440
 
             lbMenuText.Visible = false;
             lbMenuHeader.Text = "Main Menu";
@@ -231,7 +241,7 @@ namespace paper_maze
         private void ShowPauseMenu()
         {
             isPaused = true;
-
+            SmoothBackgroundColorTransition(Color.FromArgb(255, 59, 66, 82)); // #3b4252
             HideGameContent();
 
             lbMenuHeader.Text = "Pause";
@@ -245,6 +255,8 @@ namespace paper_maze
         private void HidePauseMenu()
         {
             isPaused = false;
+
+            SmoothBackgroundColorTransition(Color.FromArgb(255, 216, 222, 223));
 
             lbMenuHeader.Visible = false;
             btnResume.Visible = false;
@@ -274,13 +286,12 @@ namespace paper_maze
             pbGameArea.Size = new Size(pictureBoxWidth, pictureBoxHeight + 44);
         }
 
-        private void LoadMaze(string filePath)
+        private void LoadMaze(string[] mazeData)
         {
             try
             {
-                string[] lines = File.ReadAllLines(filePath);
-                int height = lines.Length;
-                int width = lines[0].Length;
+                int height = mazeData.Length;
+                int width = mazeData[0].Length;
                 maze = new char[height, width];
                 coinsGenerated = new bool[height, width];
 
@@ -294,7 +305,7 @@ namespace paper_maze
                 {
                     for (int j = 0; j < width; j++)
                     {
-                        maze[i, j] = lines[i][j];
+                        maze[i, j] = mazeData[i][j];
 
                         // Player Spawnpoint
                         if (maze[i, j] == 'P')
@@ -522,6 +533,29 @@ namespace paper_maze
             DrawMaze();
         }
 
+        private void ColorChangeTimer_Tick(object sender, EventArgs e)
+        {
+
+            int currentR = this.BackColor.R;
+            int currentG = this.BackColor.G;
+            int currentB = this.BackColor.B;
+
+            int targetR = targetColor.R;
+            int targetG = targetColor.G;
+            int targetB = targetColor.B;
+
+            int newR = (int)(currentR + (targetR - currentR) * colorChangeSpeed);
+            int newG = (int)(currentG + (targetG - currentG) * colorChangeSpeed);
+            int newB = (int)(currentB + (targetB - currentB) * colorChangeSpeed);
+
+            this.BackColor = Color.FromArgb(newR, newG, newB);
+
+            if (Math.Abs(newR - targetR) < 2 && Math.Abs(newG - targetG) < 2 && Math.Abs(newB - targetB) < 2)
+            {
+                colorChangeTimer.Stop();
+            }
+        }
+
         //============================= Render ===============================
         private void DrawMaze()
         {
@@ -557,6 +591,7 @@ namespace paper_maze
                         int currentX = j * cellSize;
                         int currentY = i * cellSize;
 
+
                         if (i != playerY || j != playerX)
                         {
                             g.FillRectangle(brush, currentX, currentY, cellSize, cellSize);
@@ -585,6 +620,12 @@ namespace paper_maze
         private double HermiteInterpolate(double t)
         {
             return t * t * (3 - 2 * t);
+        }
+
+        private void SmoothBackgroundColorTransition(Color targetColor)
+        {
+            this.targetColor = targetColor;
+            colorChangeTimer.Start();
         }
 
     }

@@ -60,14 +60,18 @@ namespace paper_maze
         public CellState Wall;
     }
 
-    public class Maze
+    public class MazeGenerator
     {
-        private readonly CellState[,] _cells;
-        private readonly int _width;
-        private readonly int _height;
-        private readonly Random _rng;
+        private CellState[,] _cells;
+        private int _width;
+        private int _height;
+        private Random _rng;
 
-        public Maze(int width, int height)
+        public MazeGenerator()
+        {
+        }
+
+        public string[] GenerateMaze(int width, int height)
         {
             _width = width;
             _height = height;
@@ -77,6 +81,8 @@ namespace paper_maze
                     _cells[x, y] = CellState.Initial;
             _rng = new Random();
             VisitCell(_rng.Next(width), _rng.Next(height));
+
+            return Display();
         }
 
         public CellState this[int x, int y]
@@ -101,8 +107,10 @@ namespace paper_maze
                 VisitCell(p.Neighbour.X, p.Neighbour.Y);
             }
         }
-        public void Display()
+        public string[] Display()
         {
+            List<string> mazeLines = new List<string>();
+
             for (var y = 0; y < _height; y++)
             {
                 var sbTop = new StringBuilder();
@@ -113,18 +121,22 @@ namespace paper_maze
                     sbMid.Append(this[x, y].HasFlag(CellState.Left) ? "1" : "0");
                     sbMid.Append("0");
                 }
-                Debug.WriteLine(sbTop.ToString() + "1");
-                Debug.WriteLine(sbMid.ToString() + "1");
+                mazeLines.Add(sbTop.ToString() + "1");
+                mazeLines.Add(sbMid.ToString() + "1");
             }
+
+            var lastLine = new StringBuilder();
             for (var h = 0; h < _width; h++)
             {
-                Debug.Write("11");
+                lastLine.Append("11");
             }
-            Debug.Write("1");
+            lastLine.Append("1");
+            mazeLines.Add(lastLine.ToString());
 
+            return mazeLines.ToArray();
         }
 
-        public void DisplayAndSaveToFile(string filePath)
+        /*public void DisplayAndSaveToFile(string filePath)
         {
             using (StreamWriter sw = new StreamWriter(filePath))
             {
@@ -147,6 +159,6 @@ namespace paper_maze
                 }
                 sw.Write("1");
             }
-        }
+        }*/
     }
 }

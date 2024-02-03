@@ -59,7 +59,6 @@ namespace paper_maze
                 Start();
             }
 
-            Debug.WriteLine("Запуск анимации: " + Anim.ID + "| TargetValue: " + Anim.TargetValue);
             Anim.Status = Animation.AnimationStatus.Requested;
 
             Animation dupAnim = GetDuplicate(Anim);
