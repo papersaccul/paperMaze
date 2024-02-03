@@ -44,13 +44,13 @@ namespace paper_maze
             ((System.ComponentModel.ISupportInitialize)(this.pbGameArea)).BeginInit();
             this.SuspendLayout();
             // 
-            // pictureBox1
+            // pbGameArea
             // 
             this.pbGameArea.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.pbGameArea.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pbGameArea.Location = new System.Drawing.Point(0, 0);
             this.pbGameArea.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
-            this.pbGameArea.Name = "pictureBox1";
+            this.pbGameArea.Name = "pbGameArea";
             this.pbGameArea.Size = new System.Drawing.Size(524, 601);
             this.pbGameArea.TabIndex = 0;
             this.pbGameArea.TabStop = false;
@@ -58,9 +58,10 @@ namespace paper_maze
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.White;
+            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(216)))), ((int)(((byte)(222)))), ((int)(((byte)(233)))));
             this.label1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label1.Font = new System.Drawing.Font("Inter", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Font = new System.Drawing.Font("Inter", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(54)))));
             this.label1.Location = new System.Drawing.Point(0, 559);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(118, 42);
@@ -71,8 +72,8 @@ namespace paper_maze
             // lbMenuHeader
             // 
             this.lbMenuHeader.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.lbMenuHeader.Font = new System.Drawing.Font("Inter", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbMenuHeader.ForeColor = System.Drawing.Color.White;
+            this.lbMenuHeader.Font = new System.Drawing.Font("Inter", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lbMenuHeader.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(216)))), ((int)(((byte)(222)))), ((int)(((byte)(233)))));
             this.lbMenuHeader.Location = new System.Drawing.Point(10, 155);
             this.lbMenuHeader.Name = "lbMenuHeader";
             this.lbMenuHeader.Size = new System.Drawing.Size(504, 43);
@@ -83,7 +84,7 @@ namespace paper_maze
             // lbMenuText
             // 
             this.lbMenuText.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.lbMenuText.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbMenuText.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.lbMenuText.ForeColor = System.Drawing.Color.White;
             this.lbMenuText.Location = new System.Drawing.Point(10, 207);
             this.lbMenuText.Name = "lbMenuText";
@@ -96,9 +97,9 @@ namespace paper_maze
             // 
             this.rbHard.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.rbHard.BackColor = System.Drawing.Color.White;
-            this.rbHard.Font = new System.Drawing.Font("Inter", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbHard.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rbHard.ForeColor = System.Drawing.Color.White;
-            this.rbHard.Location = new System.Drawing.Point(205, 248);
+            this.rbHard.Location = new System.Drawing.Point(199, 245);
             this.rbHard.Name = "rbHard";
             this.rbHard.Size = new System.Drawing.Size(150, 30);
             this.rbHard.TabIndex = 22;
@@ -110,9 +111,9 @@ namespace paper_maze
             this.rbMedium.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.rbMedium.BackColor = System.Drawing.Color.White;
             this.rbMedium.Checked = true;
-            this.rbMedium.Font = new System.Drawing.Font("Inter", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbMedium.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rbMedium.ForeColor = System.Drawing.Color.White;
-            this.rbMedium.Location = new System.Drawing.Point(205, 282);
+            this.rbMedium.Location = new System.Drawing.Point(199, 279);
             this.rbMedium.Name = "rbMedium";
             this.rbMedium.Size = new System.Drawing.Size(150, 30);
             this.rbMedium.TabIndex = 21;
@@ -124,9 +125,9 @@ namespace paper_maze
             // 
             this.rbEasy.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.rbEasy.BackColor = System.Drawing.Color.White;
-            this.rbEasy.Font = new System.Drawing.Font("Inter", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbEasy.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rbEasy.ForeColor = System.Drawing.Color.White;
-            this.rbEasy.Location = new System.Drawing.Point(205, 318);
+            this.rbEasy.Location = new System.Drawing.Point(199, 315);
             this.rbEasy.Name = "rbEasy";
             this.rbEasy.Size = new System.Drawing.Size(150, 30);
             this.rbEasy.TabIndex = 20;
@@ -146,8 +147,8 @@ namespace paper_maze
             this.btnCancel.BorderColorOnHover = System.Drawing.Color.Tomato;
             this.btnCancel.BorderColorOnHoverEnabled = false;
             this.btnCancel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnCancel.Font = new System.Drawing.Font("Inter", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel.ForeColor = System.Drawing.Color.Black;
+            this.btnCancel.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(54)))));
             this.btnCancel.Location = new System.Drawing.Point(257, 388);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.RippleColor = System.Drawing.Color.Black;
@@ -175,8 +176,8 @@ namespace paper_maze
             this.btnOk.BorderColorOnHover = System.Drawing.Color.Tomato;
             this.btnOk.BorderColorOnHoverEnabled = false;
             this.btnOk.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnOk.Font = new System.Drawing.Font("Inter", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOk.ForeColor = System.Drawing.Color.Black;
+            this.btnOk.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnOk.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(54)))));
             this.btnOk.Location = new System.Drawing.Point(100, 388);
             this.btnOk.Name = "btnOk";
             this.btnOk.RippleColor = System.Drawing.Color.Black;
@@ -204,8 +205,8 @@ namespace paper_maze
             this.btnStart.BorderColorOnHover = System.Drawing.Color.Tomato;
             this.btnStart.BorderColorOnHoverEnabled = false;
             this.btnStart.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnStart.Font = new System.Drawing.Font("Inter", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStart.ForeColor = System.Drawing.Color.Black;
+            this.btnStart.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnStart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(54)))));
             this.btnStart.Location = new System.Drawing.Point(182, 218);
             this.btnStart.Name = "btnStart";
             this.btnStart.RippleColor = System.Drawing.Color.Black;
@@ -233,8 +234,8 @@ namespace paper_maze
             this.btnResume.BorderColorOnHover = System.Drawing.Color.Tomato;
             this.btnResume.BorderColorOnHoverEnabled = false;
             this.btnResume.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnResume.Font = new System.Drawing.Font("Inter", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnResume.ForeColor = System.Drawing.Color.Black;
+            this.btnResume.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnResume.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(54)))));
             this.btnResume.Location = new System.Drawing.Point(182, 218);
             this.btnResume.Name = "btnResume";
             this.btnResume.RippleColor = System.Drawing.Color.Black;
@@ -263,8 +264,8 @@ namespace paper_maze
             this.btnExit.BorderColorOnHover = System.Drawing.Color.Tomato;
             this.btnExit.BorderColorOnHoverEnabled = false;
             this.btnExit.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnExit.Font = new System.Drawing.Font("Inter", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnExit.ForeColor = System.Drawing.Color.Black;
+            this.btnExit.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnExit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(54)))));
             this.btnExit.Location = new System.Drawing.Point(182, 356);
             this.btnExit.Name = "btnExit";
             this.btnExit.RippleColor = System.Drawing.Color.Black;
@@ -292,8 +293,8 @@ namespace paper_maze
             this.btnAbout.BorderColorOnHover = System.Drawing.Color.Tomato;
             this.btnAbout.BorderColorOnHoverEnabled = false;
             this.btnAbout.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnAbout.Font = new System.Drawing.Font("Inter", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAbout.ForeColor = System.Drawing.Color.Black;
+            this.btnAbout.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnAbout.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(54)))));
             this.btnAbout.Location = new System.Drawing.Point(182, 310);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.RippleColor = System.Drawing.Color.Black;
@@ -321,8 +322,8 @@ namespace paper_maze
             this.btnSettings.BorderColorOnHover = System.Drawing.Color.Tomato;
             this.btnSettings.BorderColorOnHoverEnabled = false;
             this.btnSettings.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnSettings.Font = new System.Drawing.Font("Inter", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSettings.ForeColor = System.Drawing.Color.Black;
+            this.btnSettings.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnSettings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(54)))));
             this.btnSettings.Location = new System.Drawing.Point(182, 264);
             this.btnSettings.Name = "btnSettings";
             this.btnSettings.RippleColor = System.Drawing.Color.Black;

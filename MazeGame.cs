@@ -21,8 +21,8 @@ namespace paper_maze
         private Random random = new Random();
         Timer gameTimer = new Timer();
         private double coinProbability = 0.03;
-        private double enemyProbability = 0.003;
-        private double enemyMovementProbability = 0.4;
+        private double enemyProbability = 0.005;
+        private double enemyMovementProbability = 0.025;
 
         private int cellSize;
         private int difficulty;
@@ -30,12 +30,17 @@ namespace paper_maze
         private bool isAbout = false;
         private bool isStarted = false;
 
+        // interp movement
+        private double playerVisualX;
+        private double playerVisualY;
+        private double playerInterpolationFactor = 0.5;
+
         public MazeGame()
         {
             InitializeComponent();
 
             gameTimer = new Timer();
-            gameTimer.Interval = 50; // 20fps lock
+            gameTimer.Interval = 16; // 62.5fps lock
             gameTimer.Tick += GameTick;
 
             btnStart.Click += BtnStart_Click;
@@ -66,6 +71,7 @@ namespace paper_maze
 
             btnOk.Click += (s, a) =>
             {
+                this.BackColor = Color.FromArgb(255, 216, 222, 223); // #2e3440 
 
                 if (rbEasy.Checked)
                     difficulty = 16;
@@ -251,8 +257,9 @@ namespace paper_maze
         private void InitializeGame(int difficulty)
         {
             playerHealth = 3;
-            label1.Text = $"Coins: {coinsCollected} | Health: {playerHealth}";
+            HudUpdate();
             pbGameArea.SizeMode = PictureBoxSizeMode.AutoSize;
+            pbGameArea.BackColor = Color.FromArgb(0, 0, 0, 0);
 
             GenerateCoinsAndEnemies();
 
@@ -412,30 +419,7 @@ namespace paper_maze
                         maze[playerY, playerX] = '0'; // Remove the coin
                         coinsGenerated[playerY, playerX] = false;
                         DrawMaze();
-                        label1.Text = $"Coins: {coinsCollected} | Health: {playerHealth}";
-                    }
-
-                    // Enemy Check
-                    else if (maze[playerY, playerX] == 'E')
-                    {
-                        playerHealth--;
-                        if (playerHealth <= 0)
-                        {
-                            DrawMaze();
-                            label1.Text = $"Coins: {coinsCollected} | Health: {playerHealth}";
-                            MessageBox.Show("Game over! Player health depleted.");
-                            RestartGame();
-                        }
-                        else
-                        {
-                            maze[playerY, playerX] = '0'; // Remove enemy
-                            DrawMaze();
-                            label1.Text = $"Coins: {coinsCollected} | Health: {playerHealth}";
-                        }
-                    }
-                    else
-                    {
-                        DrawMaze();
+                        HudUpdate();
                     }
 
                     // Win Check
@@ -500,6 +484,32 @@ namespace paper_maze
             }
         }
 
+        private void PosChecker()
+        {
+            if (maze[playerY, playerX] == 'E')
+            {
+                playerHealth--;
+                if (playerHealth <= 0)
+                {
+                    DrawMaze();
+                    HudUpdate();
+                    MessageBox.Show("Game over! Player health depleted.");
+                    RestartGame();
+                }
+                else
+                {
+                    maze[playerY, playerX] = '0'; // Remove enemy
+                    DrawMaze();
+                    HudUpdate();
+                }
+            }
+        }
+
+        private void HudUpdate()
+        {
+            label1.Text = $"Coins: {coinsCollected} | Health: {playerHealth}";
+        }
+
         private bool IsValidMove(int y, int x)
         {
             return y >= 0 && y < maze.GetLength(0) && x >= 0 && x < maze.GetLength(1) && maze[y, x] == '0';
@@ -508,13 +518,13 @@ namespace paper_maze
         private void GameTick(object sender, EventArgs e)
         {
             ProcessEnemiesMovement();
+            PosChecker();
             DrawMaze();
         }
 
         //============================= Render ===============================
         private void DrawMaze()
         {
-
             Bitmap bitmap = new Bitmap(maze.GetLength(1) * cellSize, maze.GetLength(0) * cellSize);
             using (Graphics g = Graphics.FromImage(bitmap))
             {
@@ -525,11 +535,7 @@ namespace paper_maze
                         Brush brush;
                         if (maze[i, j] == '1')
                         {
-                            brush = Brushes.Black; // Wall
-                        }
-                        else if (maze[i, j] == 'P')
-                        {
-                            brush = Brushes.White; // Player
+                            brush = new SolidBrush(Color.FromArgb(255, 46, 52, 64)); // Wall
                         }
                         else if (maze[i, j] == 'C')
                         {
@@ -545,20 +551,40 @@ namespace paper_maze
                         }
                         else
                         {
-                            brush = Brushes.White; // Space
+                            brush = new SolidBrush(Color.FromArgb(0, 0, 0, 0)); // Space
                         }
 
-                        g.FillRectangle(brush, j * cellSize, i * cellSize, cellSize, cellSize);
+                        int currentX = j * cellSize;
+                        int currentY = i * cellSize;
 
-                        if (i == playerY && j == playerX)
+                        if (i != playerY || j != playerX)
                         {
-                            g.FillEllipse(Brushes.Red, j * cellSize, i * cellSize, cellSize, cellSize);
+                            g.FillRectangle(brush, currentX, currentY, cellSize, cellSize);
                         }
+                        else
+                        {
+                            int visualX = (int)(playerVisualX * cellSize);
+                            int visualY = (int)(playerVisualY * cellSize);
+
+                            g.FillRectangle(new SolidBrush(Color.FromArgb(0, 0, 0, 0)), currentX, currentY, cellSize, cellSize);
+                            g.FillEllipse(Brushes.Red, visualX, visualY, cellSize, cellSize);
+                        }
+
+                        Application.DoEvents();
                     }
                 }
             }
 
             pbGameArea.Image = bitmap;
+
+            double factor = HermiteInterpolate(playerInterpolationFactor);
+            playerVisualX += (playerX - playerVisualX) * factor;
+            playerVisualY += (playerY - playerVisualY) * factor;
+        }
+
+        private double HermiteInterpolate(double t)
+        {
+            return t * t * (3 - 2 * t);
         }
 
     }
