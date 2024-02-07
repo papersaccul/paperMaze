@@ -504,13 +504,19 @@ namespace paper_maze
         {
             if (maze[playerY, playerX] == 'E')
             {
-                playerHealth--;
+                if (playerHealth > 0)
+                    playerHealth--;
+
                 if (playerHealth <= 0)
                 {
                     DrawMaze();
                     HudUpdate();
+                    maze[playerY, playerX] = '0'; // Remove enemy
+                    gameTimer.Stop();
                     MessageBox.Show("Game over! Player health depleted.");
-                    RestartGame();
+                    gameTimer.Stop();
+                    HideGameContent();
+                    ShowMainMenu();
                 }
                 else
                 {
