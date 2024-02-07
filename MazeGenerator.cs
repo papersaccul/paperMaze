@@ -69,6 +69,7 @@ namespace paper_maze
 
         public MazeGenerator()
         {
+            
         }
 
         public string[] GenerateMaze(int width, int height)

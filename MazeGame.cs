@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 
 namespace paper_maze
 {
     public partial class MazeGame : Form
     {
-        private string version = "0.1.5";
+        private string version = "0.1.6";
 
         private Color targetColor;
         private Timer colorChangeTimer;
@@ -40,13 +39,13 @@ namespace paper_maze
         private double playerVisualY;
         private double playerInterpolationFactor = 0.5;
 
-        private MazeGenerator mazeGenerator;
+        private MazeGenerator mazeGenerator = new MazeGenerator();
 
         public MazeGame()
         {
             InitializeComponent();
 
-            mazeGenerator = new MazeGenerator();
+            //mazeGenerator = new MazeGenerator();
 
             gameTimer = new Timer();
             gameTimer.Interval = 16; // 62.5fps lock
@@ -61,6 +60,9 @@ namespace paper_maze
             btnAbout.Click += BtnAbout_Click;
             btnResume.Click += BtnResume_Click;
             btnExit.Click += BtnExit_Click;
+
+            btnOk.Click += BtnOk_Click;
+            btnCancel.Click += BtnCancel_Click;
 
             HideGameContent();
             HideDifficultyForm();
@@ -81,33 +83,31 @@ namespace paper_maze
             HideMainMenu();
             ShowDifficultyForm();
             SmoothBackgroundColorTransition(Color.FromArgb(255, 59, 66, 82)); // #3b4252
+        }
+
+        private void BtnOk_Click(object sender, EventArgs e)
+        {
+            SmoothBackgroundColorTransition(Color.FromArgb(255, 216, 222, 223)); // #2e3440 
+            if (rbEasy.Checked)
+                difficulty = 16;
+            else if (rbMedium.Checked)
+                difficulty = 24;
+            else // rbHard.Checked
+                difficulty = 32;
 
 
-            btnOk.Click += (s, a) =>
-            {
-                SmoothBackgroundColorTransition(Color.FromArgb(255, 216, 222, 223)); // #2e3440 
-                    if (rbEasy.Checked)
-                        difficulty = 16;
-                    else if (rbMedium.Checked)
-                        difficulty = 24;
-                    else // rbHard.Checked
-                        difficulty = 32;
 
+            LoadMaze(mazeGenerator.GenerateMaze(difficulty, difficulty));
+            InitializeGame(difficulty);
+            HideDifficultyForm();
+            ShowGameContent();
+            gameTimer.Start();
+        }
 
-
-                LoadMaze(mazeGenerator.GenerateMaze(difficulty, difficulty));
-                InitializeGame(difficulty);
-                HideDifficultyForm();
-                ShowGameContent();
-                gameTimer.Start();
-
-            };
-
-            btnCancel.Click += (s, a) =>
-            {
-                HideDifficultyForm();
-                ShowMainMenu();
-            };
+        private void BtnCancel_Click(object sender, EventArgs e)
+        {
+            HideDifficultyForm();
+            ShowMainMenu();
         }
 
         private void BtnSettings_Click(object sender, EventArgs e)
@@ -123,6 +123,7 @@ namespace paper_maze
             btnAbout.Visible = false;
             lbMenuText.Visible = true;
 
+            btnExit.Text = "Back";
             lbMenuHeader.Text = "Guide";
             lbMenuText.Text = $"Arrows or WASD for movement,\nEsc for pause,\nYellow cells - coins,\nRed cells - enemies.\nGreen cell - finish";
         }
@@ -140,6 +141,7 @@ namespace paper_maze
             btnAbout.Visible = false;
             lbMenuText.Visible = true;
 
+            btnExit.Text = "Back";
             lbMenuHeader.Text = "About";
             lbMenuText.Text = $"Version {version}\n\n https://github.com/papersaccul";
         }
@@ -162,7 +164,7 @@ namespace paper_maze
             {
                 HidePauseMenu();
                 HideDifficultyForm();
-                ShowMainMenu();
+                ShowMainMenu(); 
                 this.Size = new Size(540, 640);
             }
             else if (!isPaused && isAbout)
@@ -235,6 +237,7 @@ namespace paper_maze
             btnStart.Visible = true;
             btnSettings.Visible = true;
             btnAbout.Visible = true;
+            btnExit.Text = "Exit";
             btnExit.Visible = true;
         }
 
@@ -249,6 +252,7 @@ namespace paper_maze
             btnResume.Visible = true;
             btnSettings.Visible = true;
             btnAbout.Visible = true;
+            btnExit.Text = "Back";
             btnExit.Visible = true;
         }
 
@@ -262,6 +266,7 @@ namespace paper_maze
             btnResume.Visible = false;
             btnSettings.Visible = false;
             btnAbout.Visible = false;
+            btnExit.Text = "Exit";
             btnExit.Visible = false;
         }
 
@@ -627,6 +632,5 @@ namespace paper_maze
             this.targetColor = targetColor;
             colorChangeTimer.Start();
         }
-
     }
 }

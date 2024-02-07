@@ -96,7 +96,8 @@ namespace paper_maze
             // rbHard
             // 
             this.rbHard.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.rbHard.BackColor = System.Drawing.Color.White;
+            this.rbHard.BackColor = System.Drawing.Color.Transparent;
+            this.rbHard.Cursor = System.Windows.Forms.Cursors.Hand;
             this.rbHard.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rbHard.ForeColor = System.Drawing.Color.White;
             this.rbHard.Location = new System.Drawing.Point(199, 245);
@@ -109,8 +110,9 @@ namespace paper_maze
             // rbMedium
             // 
             this.rbMedium.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.rbMedium.BackColor = System.Drawing.Color.White;
+            this.rbMedium.BackColor = System.Drawing.Color.Transparent;
             this.rbMedium.Checked = true;
+            this.rbMedium.Cursor = System.Windows.Forms.Cursors.Hand;
             this.rbMedium.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rbMedium.ForeColor = System.Drawing.Color.White;
             this.rbMedium.Location = new System.Drawing.Point(199, 279);
@@ -124,7 +126,8 @@ namespace paper_maze
             // rbEasy
             // 
             this.rbEasy.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.rbEasy.BackColor = System.Drawing.Color.White;
+            this.rbEasy.BackColor = System.Drawing.Color.Transparent;
+            this.rbEasy.Cursor = System.Windows.Forms.Cursors.Hand;
             this.rbEasy.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rbEasy.ForeColor = System.Drawing.Color.White;
             this.rbEasy.Location = new System.Drawing.Point(199, 315);
@@ -357,6 +360,7 @@ namespace paper_maze
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lbMenuText);
             this.Controls.Add(this.pbGameArea);
+            this.Cursor = System.Windows.Forms.Cursors.Default;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "MazeGame";
             ((System.ComponentModel.ISupportInitialize)(this.pbGameArea)).EndInit();
