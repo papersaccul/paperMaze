@@ -41,6 +41,10 @@ namespace paper_maze
             this.btnExit = new paper_maze.pmButton();
             this.btnAbout = new paper_maze.pmButton();
             this.btnSettings = new paper_maze.pmButton();
+            this.btnShop1 = new paper_maze.pmButton();
+            this.btnShop2 = new paper_maze.pmButton();
+            this.lbShop1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pbGameArea)).BeginInit();
             this.SuspendLayout();
             // 
@@ -341,11 +345,103 @@ namespace paper_maze
             this.btnSettings.UseVisualStyleBackColor = false;
             this.btnSettings.UseZoomEffectOnHover = true;
             // 
+            // btnShop1
+            // 
+            this.btnShop1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.btnShop1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnShop1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(203)))), ((int)(((byte)(139)))));
+            this.btnShop1.BackColorAdditional = System.Drawing.Color.Transparent;
+            this.btnShop1.BackColorGradientEnabled = false;
+            this.btnShop1.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
+            this.btnShop1.BorderColor = System.Drawing.Color.Tomato;
+            this.btnShop1.BorderColorEnabled = false;
+            this.btnShop1.BorderColorOnHover = System.Drawing.Color.Tomato;
+            this.btnShop1.BorderColorOnHoverEnabled = false;
+            this.btnShop1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnShop1.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnShop1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(54)))));
+            this.btnShop1.Location = new System.Drawing.Point(338, 240);
+            this.btnShop1.Name = "btnShop1";
+            this.btnShop1.RippleColor = System.Drawing.Color.Black;
+            this.btnShop1.Rounding = 45;
+            this.btnShop1.RoundingEnable = true;
+            this.btnShop1.Size = new System.Drawing.Size(104, 40);
+            this.btnShop1.TabIndex = 23;
+            this.btnShop1.Text = "Buy  5¢";
+            this.btnShop1.TextHover = null;
+            this.btnShop1.UseDownPressEffectOnClick = false;
+            this.btnShop1.UseRippleEffect = true;
+            this.btnShop1.UseVisualStyleBackColor = false;
+            this.btnShop1.UseZoomEffectOnHover = true;
+            this.btnShop1.Visible = false;
+            // 
+            // btnShop2
+            // 
+            this.btnShop2.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.btnShop2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnShop2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(203)))), ((int)(((byte)(139)))));
+            this.btnShop2.BackColorAdditional = System.Drawing.Color.Transparent;
+            this.btnShop2.BackColorGradientEnabled = false;
+            this.btnShop2.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
+            this.btnShop2.BorderColor = System.Drawing.Color.Tomato;
+            this.btnShop2.BorderColorEnabled = false;
+            this.btnShop2.BorderColorOnHover = System.Drawing.Color.Tomato;
+            this.btnShop2.BorderColorOnHoverEnabled = false;
+            this.btnShop2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnShop2.Font = new System.Drawing.Font("Inter", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnShop2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(54)))));
+            this.btnShop2.Location = new System.Drawing.Point(338, 286);
+            this.btnShop2.Name = "btnShop2";
+            this.btnShop2.RippleColor = System.Drawing.Color.Black;
+            this.btnShop2.Rounding = 45;
+            this.btnShop2.RoundingEnable = true;
+            this.btnShop2.Size = new System.Drawing.Size(104, 40);
+            this.btnShop2.TabIndex = 24;
+            this.btnShop2.Text = "Buy 10¢";
+            this.btnShop2.TextHover = null;
+            this.btnShop2.UseDownPressEffectOnClick = false;
+            this.btnShop2.UseRippleEffect = true;
+            this.btnShop2.UseVisualStyleBackColor = false;
+            this.btnShop2.UseZoomEffectOnHover = true;
+            this.btnShop2.Visible = false;
+            // 
+            // lbShop1
+            // 
+            this.lbShop1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.lbShop1.BackColor = System.Drawing.Color.Transparent;
+            this.lbShop1.Font = new System.Drawing.Font("Inter", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lbShop1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(216)))), ((int)(((byte)(222)))), ((int)(((byte)(233)))));
+            this.lbShop1.Location = new System.Drawing.Point(52, 237);
+            this.lbShop1.Name = "lbShop1";
+            this.lbShop1.Size = new System.Drawing.Size(268, 43);
+            this.lbShop1.TabIndex = 25;
+            this.lbShop1.Text = "Cure 1 health point";
+            this.lbShop1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lbShop1.Visible = false;
+            // 
+            // label2
+            // 
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Font = new System.Drawing.Font("Inter", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(216)))), ((int)(((byte)(222)))), ((int)(((byte)(233)))));
+            this.label2.Location = new System.Drawing.Point(52, 283);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(268, 43);
+            this.label2.TabIndex = 26;
+            this.label2.Text = "Kill random enemy";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label2.Visible = false;
+            // 
             // MazeGame
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(52)))), ((int)(((byte)(64)))));
             this.ClientSize = new System.Drawing.Size(524, 601);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.lbShop1);
+            this.Controls.Add(this.btnShop2);
+            this.Controls.Add(this.btnShop1);
             this.Controls.Add(this.rbHard);
             this.Controls.Add(this.rbMedium);
             this.Controls.Add(this.rbEasy);
@@ -386,6 +482,10 @@ namespace paper_maze
         private pmRadioButton rbMedium;
         private pmRadioButton rbHard;
         private System.Windows.Forms.Label lbMenuText;
+        private pmButton btnShop1;
+        private pmButton btnShop2;
+        private System.Windows.Forms.Label lbShop1;
+        private System.Windows.Forms.Label label2;
     }
 }
 

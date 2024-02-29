@@ -1,17 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 
 namespace paper_maze
 {
     public partial class MazeGame : Form
     {
-        private string version = "0.1.6";
+        private string version = "0.1.7";
 
+        // Background color change timer
         private Color targetColor;
         private Timer colorChangeTimer;
         private const double colorChangeSpeed = 0.2f;
+
+        // Wall color change timer
+        private Timer wallColorChangeTimer;
+
 
         private char[,] maze;
         private int playerX;
@@ -23,21 +29,30 @@ namespace paper_maze
         private bool levelComplete;
         private bool[,] coinsGenerated;
         private Random random = new Random();
-        Timer gameTimer = new Timer();
-        private double coinProbability = 0.03;
-        private double enemyProbability = 0.005;
-        private double enemyMovementProbability = 0.025;
+        private Timer gameTimer = new Timer();
+        private double coinProbability = 0.03f;
+        private double enemyProbability = 0.025f;
+        private double enemyMovementProbability = 0.02f;
 
         private int cellSize;
         private int difficulty;
+
         private bool isPaused = false;
         private bool isAbout = false;
         private bool isStarted = false;
+        private bool isTakingDamage = false;
 
         // interp movement
         private double playerVisualX;
         private double playerVisualY;
         private double playerInterpolationFactor = 0.5;
+
+        // Colors
+        private Color colorWall = Color.FromArgb(255, 46, 52, 64);
+        private Color initialWallColor;
+        private int damageColorTargetRed = 130;
+        private int damageColorIntensity = 80;
+        private const double damageColorStrenght = 0.5f;
 
         private MazeGenerator mazeGenerator = new MazeGenerator();
 
@@ -48,18 +63,26 @@ namespace paper_maze
             //mazeGenerator = new MazeGenerator();
 
             gameTimer = new Timer();
-            gameTimer.Interval = 16; // 62.5fps lock
+            gameTimer.Interval = 32; // 31.25fps lock
             gameTimer.Tick += GameTick;
 
             colorChangeTimer = new Timer();
             colorChangeTimer.Interval = 16; // ~62.5fps
-            colorChangeTimer.Tick += ColorChangeTimer_Tick;
+            colorChangeTimer.Tick += BackgroundColorChangeTimer_Tick;
+
+            wallColorChangeTimer = new Timer();
+            wallColorChangeTimer.Interval = 32;
+            wallColorChangeTimer.Tick += WallColorChangeTimer_Tick;
+            initialWallColor = colorWall;
 
             btnStart.Click += BtnStart_Click;
             btnSettings.Click += BtnSettings_Click;
             btnAbout.Click += BtnAbout_Click;
             btnResume.Click += BtnResume_Click;
+            btnShop1.Click += BtnShop1_Click;
+            btnShop2.Click += BtnShop2_Click;
             btnExit.Click += BtnExit_Click;
+
 
             btnOk.Click += BtnOk_Click;
             btnCancel.Click += BtnCancel_Click;
@@ -76,6 +99,8 @@ namespace paper_maze
                     gameTimer.Start();
             }
         }
+
+        
 
         //============================= Button Click ==========================
         private void BtnStart_Click(object sender, EventArgs e)
@@ -150,6 +175,16 @@ namespace paper_maze
         {
             HidePauseMenu();
             ShowGameContent();
+        }
+
+        private void BtnShop1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnShop2_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void BtnExit_Click(object sender, EventArgs e)
@@ -420,6 +455,10 @@ namespace paper_maze
                             ShowPauseMenu();
                         else HidePauseMenu();
                         break;
+                    //case Keys.Tab:
+                        //if (!isPaused)
+                            //ShowShopMenu();
+                        //break;
                 }
 
                 // Check new pos
@@ -505,8 +544,12 @@ namespace paper_maze
             if (maze[playerY, playerX] == 'E')
             {
                 if (playerHealth > 0)
+                {
                     playerHealth--;
-
+                    isTakingDamage = true;
+                    wallColorChangeTimer.Start();
+                }
+                    
                 if (playerHealth <= 0)
                 {
                     DrawMaze();
@@ -544,7 +587,7 @@ namespace paper_maze
             DrawMaze();
         }
 
-        private void ColorChangeTimer_Tick(object sender, EventArgs e)
+        private void BackgroundColorChangeTimer_Tick(object sender, EventArgs e)
         {
 
             int currentR = this.BackColor.R;
@@ -567,6 +610,42 @@ namespace paper_maze
             }
         }
 
+        private void WallColorChangeTimer_Tick(object sender, EventArgs e)
+        {
+            if (isTakingDamage)
+            {
+                // Плавное изменение цвета к красному
+                colorWall = Color.FromArgb(
+                    Math.Min(colorWall.R + (int)(damageColorIntensity * damageColorStrenght), damageColorTargetRed),
+                    colorWall.G,
+                    colorWall.B
+                );
+
+                // Если цвет достиг цели, остановить таймер
+                if (colorWall.R == damageColorTargetRed)
+                {
+                    isTakingDamage = false;
+                }
+            }
+            else
+            {
+                // Плавное изменение цвета к исходному
+                colorWall = Color.FromArgb(
+                    Math.Max(colorWall.R - (int)(damageColorIntensity * damageColorStrenght), initialWallColor.R),
+                    colorWall.G,
+                    colorWall.B
+                );
+
+                // Если цвет вернулся к исходному, остановить таймер
+                if (colorWall.R == initialWallColor.R)
+                {
+                    wallColorChangeTimer.Stop();
+                }
+            }
+        }
+
+
+
         //============================= Render ===============================
         private void DrawMaze()
         {
@@ -580,7 +659,7 @@ namespace paper_maze
                         Brush brush;
                         if (maze[i, j] == '1')
                         {
-                            brush = new SolidBrush(Color.FromArgb(255, 46, 52, 64)); // Wall
+                            brush = new SolidBrush(colorWall);
                         }
                         else if (maze[i, j] == 'C')
                         {
@@ -619,6 +698,7 @@ namespace paper_maze
                         Application.DoEvents();
                     }
                 }
+
             }
 
             pbGameArea.Image = bitmap;
@@ -638,5 +718,6 @@ namespace paper_maze
             this.targetColor = targetColor;
             colorChangeTimer.Start();
         }
+
     }
 }
