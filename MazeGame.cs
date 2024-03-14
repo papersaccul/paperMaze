@@ -137,7 +137,7 @@ namespace paper_maze
                 coinsGenerated = new bool[height, width];
 
                 totalCoins = 0;
-                coinsCollected = 15;
+                coinsCollected = 0;
                 levelComplete = false;
 
                 bool firstZeroFound = false;
