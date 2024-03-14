@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="ButtonAnimation\Animator.cs" />
     <Compile Include="ButtonAnimation\Animation.cs" />
+    <Compile Include="UImanager.cs" />
     <Compile Include="pmRadionButton.cs">
       <SubType>Component</SubType>
     </Compile>

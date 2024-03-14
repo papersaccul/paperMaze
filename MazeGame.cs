@@ -4,11 +4,13 @@ using System.Drawing;
 using System.Security.Cryptography;
 using System.Windows.Forms;
 
+// Welcum to the "Le govnocod"
+
 namespace paper_maze
 {
     public partial class MazeGame : Form
     {
-        private string version = "0.1.7";
+        public string version = "0.1.7";
 
         // Background color change timer
         private Color targetColor;
@@ -22,24 +24,24 @@ namespace paper_maze
         private char[,] maze;
         private int playerX;
         private int playerY;
-
-        private int coinsCollected;
-        private int totalCoins;
-        private int playerHealth;
+        public int coinsCollected;
+        public int totalCoins;
+        public int playerHealth;
         private bool levelComplete;
         private bool[,] coinsGenerated;
         private Random random = new Random();
-        private Timer gameTimer = new Timer();
+        public Timer gameTimer = new Timer();   
         private double coinProbability = 0.03f;
-        private double enemyProbability = 0.025f;
+        private double enemyProbability = 0.005f;
         private double enemyMovementProbability = 0.02f;
 
         private int cellSize;
-        private int difficulty;
+        public int difficulty;
 
-        private bool isPaused = false;
-        private bool isAbout = false;
-        private bool isStarted = false;
+        public bool isPaused = false;
+        public bool isShopMenuOpen = false;
+        public bool isAbout = false;
+        public bool isStarted = false;
         private bool isTakingDamage = false;
 
         // interp movement
@@ -49,47 +51,48 @@ namespace paper_maze
 
         // Colors
         private Color colorWall = Color.FromArgb(255, 46, 52, 64);
-        private Color initialWallColor;
-        private int damageColorTargetRed = 130;
-        private int damageColorIntensity = 80;
+        private Color _initialWallColor;
+        private int _damageColorTargetRed = 130;
+        private int _damageColorIntensity = 80;
         private const double damageColorStrenght = 0.5f;
-
+        
         private MazeGenerator mazeGenerator = new MazeGenerator();
+        private UIManager uiManager;
 
         public MazeGame()
         {
             InitializeComponent();
 
-            //mazeGenerator = new MazeGenerator();
+            uiManager = new UIManager(this);
 
             gameTimer = new Timer();
             gameTimer.Interval = 32; // 31.25fps lock
             gameTimer.Tick += GameTick;
 
             colorChangeTimer = new Timer();
-            colorChangeTimer.Interval = 16; // ~62.5fps
+            colorChangeTimer.Interval = 16; // ~62.5 fps
             colorChangeTimer.Tick += BackgroundColorChangeTimer_Tick;
 
             wallColorChangeTimer = new Timer();
             wallColorChangeTimer.Interval = 32;
             wallColorChangeTimer.Tick += WallColorChangeTimer_Tick;
-            initialWallColor = colorWall;
+            _initialWallColor = colorWall;
 
-            btnStart.Click += BtnStart_Click;
-            btnSettings.Click += BtnSettings_Click;
-            btnAbout.Click += BtnAbout_Click;
-            btnResume.Click += BtnResume_Click;
-            btnShop1.Click += BtnShop1_Click;
-            btnShop2.Click += BtnShop2_Click;
-            btnExit.Click += BtnExit_Click;
+            btnStart.Click += uiManager.BtnStart_Click;
+            btnSettings.Click += uiManager.BtnSettings_Click;
+            btnAbout.Click += uiManager.BtnAbout_Click;
+            btnResume.Click += uiManager.BtnResume_Click;
+            btnShop1.Click += uiManager.BtnShop1_Click;
+            btnShop2.Click += uiManager.BtnShop2_Click;
+            btnExit.Click += uiManager.BtnExit_Click;
 
 
-            btnOk.Click += BtnOk_Click;
-            btnCancel.Click += BtnCancel_Click;
+            btnOk.Click += uiManager.BtnOk_Click;
+            btnCancel.Click += uiManager.BtnCancel_Click;
 
-            HideGameContent();
-            HideDifficultyForm();
-            ShowMainMenu();
+            uiManager.HideGameContent();
+            uiManager.HideDifficultyForm();
+            uiManager.ShowMainMenu();
 
             while (isStarted)
             {
@@ -102,211 +105,9 @@ namespace paper_maze
 
         
 
-        //============================= Button Click ==========================
-        private void BtnStart_Click(object sender, EventArgs e)
-        {
-            HideMainMenu();
-            ShowDifficultyForm();
-            SmoothBackgroundColorTransition(Color.FromArgb(255, 59, 66, 82)); // #3b4252
-        }
-
-        private void BtnOk_Click(object sender, EventArgs e)
-        {
-            SmoothBackgroundColorTransition(Color.FromArgb(255, 216, 222, 223)); // #2e3440 
-            if (rbEasy.Checked)
-                difficulty = 16;
-            else if (rbMedium.Checked)
-                difficulty = 24;
-            else // rbHard.Checked
-                difficulty = 32;
-
-
-
-            LoadMaze(mazeGenerator.GenerateMaze(difficulty, difficulty));
-            InitializeGame(difficulty);
-            HideDifficultyForm();
-            ShowGameContent();
-            gameTimer.Start();
-        }
-
-        private void BtnCancel_Click(object sender, EventArgs e)
-        {
-            HideDifficultyForm();
-            ShowMainMenu();
-        }
-
-        private void BtnSettings_Click(object sender, EventArgs e)
-        {
-            SmoothBackgroundColorTransition(Color.FromArgb(255, 59, 66, 82)); // #3b4252
-
-            isAbout = true;
-
-            lbMenuHeader.Visible = true;
-            btnResume.Visible = false;
-            btnStart.Visible = false;
-            btnSettings.Visible = false;
-            btnAbout.Visible = false;
-            lbMenuText.Visible = true;
-
-            btnExit.Text = "Back";
-            lbMenuHeader.Text = "Guide";
-            lbMenuText.Text = $"Arrows or WASD for movement,\nEsc for pause,\nYellow cells - coins,\nRed cells - enemies.\nGreen cell - finish";
-        }
-
-        private void BtnAbout_Click(object sender, EventArgs e)
-        {
-            SmoothBackgroundColorTransition(Color.FromArgb(255, 59, 66, 82)); // #3b4252
-
-            isAbout = true;
-
-            lbMenuHeader.Visible = true;
-            btnResume.Visible = false;
-            btnStart.Visible = false;
-            btnSettings.Visible = false;
-            btnAbout.Visible = false;
-            lbMenuText.Visible = true;
-
-            btnExit.Text = "Back";
-            lbMenuHeader.Text = "About";
-            lbMenuText.Text = $"Version {version}\n\n https://github.com/papersaccul";
-        }
-
-        private void BtnResume_Click(object sender, EventArgs e)
-        {
-            HidePauseMenu();
-            ShowGameContent();
-        }
-
-        private void BtnShop1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BtnShop2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BtnExit_Click(object sender, EventArgs e)
-        {
-            if (isAbout && isPaused)
-            {
-                ShowPauseMenu();
-                lbMenuText.Visible = false;
-                isAbout = false;
-            }
-            else if (isPaused && !isAbout)
-            {
-                HidePauseMenu();
-                HideDifficultyForm();
-                ShowMainMenu(); 
-                this.Size = new Size(540, 640);
-            }
-            else if (!isPaused && isAbout)
-            {
-                isAbout = false;
-                ShowMainMenu();
-                lbMenuText.Visible = false;
-            }
-            else Close();
-
-        }
-
-        //============================= UI Switch =============================
-        private void HideGameContent()
-        {
-            label1.Visible = false;
-            pbGameArea.Visible = false;
-        }
-
-        private void ShowGameContent()
-        {
-            label1.Visible = true;
-            pbGameArea.Visible = true;
-            DrawMaze();
-        }
-
-        private void ShowDifficultyForm()
-        {
-            lbMenuHeader.Text = "Choose a difficulty";
-            lbMenuHeader.Visible = true;
-
-            btnStart.Visible = false;
-
-            rbEasy.Visible = true;
-            rbMedium.Visible = true;
-            rbHard.Visible = true;
-
-            btnOk.Visible = true;
-            btnCancel.Visible = true;
-
-        }
-
-        private void HideDifficultyForm()
-        {
-            lbMenuHeader.Visible = false;
-            rbEasy.Visible = false;
-            rbMedium.Visible = false;
-            rbHard.Visible = false;
-
-            btnOk.Visible = false;
-            btnCancel.Visible = false;
-        }
-
-        private void HideMainMenu()
-        {
-            lbMenuHeader.Visible = false;
-            btnStart.Visible = false;
-            btnSettings.Visible = false;
-            btnAbout.Visible = false;
-            btnExit.Visible = false;
-        }
-
-        private void ShowMainMenu()
-        {
-            SmoothBackgroundColorTransition(Color.FromArgb(255, 46, 52, 64)); // #2e3440
-
-            lbMenuText.Visible = false;
-            lbMenuHeader.Text = "Main Menu";
-            lbMenuHeader.Visible = true;
-            btnStart.Visible = true;
-            btnSettings.Visible = true;
-            btnAbout.Visible = true;
-            btnExit.Text = "Exit";
-            btnExit.Visible = true;
-        }
-
-        private void ShowPauseMenu()
-        {
-            isPaused = true;
-            SmoothBackgroundColorTransition(Color.FromArgb(255, 59, 66, 82)); // #3b4252
-            HideGameContent();
-
-            lbMenuHeader.Text = "Pause";
-            lbMenuHeader.Visible = true;
-            btnResume.Visible = true;
-            btnSettings.Visible = true;
-            btnAbout.Visible = true;
-            btnExit.Text = "Back";
-            btnExit.Visible = true;
-        }
-
-        private void HidePauseMenu()
-        {
-            isPaused = false;
-
-            SmoothBackgroundColorTransition(Color.FromArgb(255, 216, 222, 223));
-
-            lbMenuHeader.Visible = false;
-            btnResume.Visible = false;
-            btnSettings.Visible = false;
-            btnAbout.Visible = false;
-            btnExit.Text = "Exit";
-            btnExit.Visible = false;
-        }
 
         //============================= Init ===============================
-        private void InitializeGame(int difficulty)
+        public void InitializeGame(int difficulty)
         {
             playerHealth = 3;
             HudUpdate();
@@ -326,7 +127,7 @@ namespace paper_maze
             pbGameArea.Size = new Size(pictureBoxWidth, pictureBoxHeight + 44);
         }
 
-        private void LoadMaze(string[] mazeData)
+        public void LoadMaze(string[] mazeData)
         {
             try
             {
@@ -336,7 +137,7 @@ namespace paper_maze
                 coinsGenerated = new bool[height, width];
 
                 totalCoins = 0;
-                coinsCollected = 0;
+                coinsCollected = 15;
                 levelComplete = false;
 
                 bool firstZeroFound = false;
@@ -452,13 +253,13 @@ namespace paper_maze
                         break;
                     case Keys.Escape:
                         if (!isPaused)
-                            ShowPauseMenu();
-                        else HidePauseMenu();
+                            uiManager.ShowPauseMenu();
+                        else uiManager.HidePauseMenu();
                         break;
-                    //case Keys.Tab:
-                        //if (!isPaused)
-                            //ShowShopMenu();
-                        //break;
+                    case Keys.Tab:
+                        if (!isPaused)
+                            uiManager.ShowShopMenu();
+                        break;
                 }
 
                 // Check new pos
@@ -487,8 +288,34 @@ namespace paper_maze
                 }
             }
 
+            
+
             return base.ProcessCmdKey(ref msg, keyData);
         }
+
+        public void KillRandomEnemy()
+            {
+                List<(int, int)> enemies = new List<(int, int)>();
+
+                for (int i = 0; i < maze.GetLength(0); i++)
+                {
+                    for (int j = 0; j < maze.GetLength(1); j++)
+                    {
+                        if (maze[i, j] == 'E')
+                        {
+                            enemies.Add((i, j));
+                        }
+                    }
+                }
+
+                if (enemies.Count > 0)
+                {
+                    int randomEnemyIndex = random.Next(enemies.Count);
+                    (int enemyY, int enemyX) = enemies[randomEnemyIndex];
+
+                    maze[enemyY, enemyX] = '0';
+                }
+            }
 
         private List<(int, int)> GetPossibleMoves(int y, int x)
         {
@@ -547,7 +374,14 @@ namespace paper_maze
                 {
                     playerHealth--;
                     isTakingDamage = true;
-                    wallColorChangeTimer.Start();
+                    if (!wallColorChangeTimer.Enabled)
+                        wallColorChangeTimer.Start();
+                    else
+                    {
+                        wallColorChangeTimer.Stop();
+                        colorWall = _initialWallColor;
+                    }
+                    
                 }
                     
                 if (playerHealth <= 0)
@@ -558,8 +392,8 @@ namespace paper_maze
                     gameTimer.Stop();
                     MessageBox.Show("Game over! Player health depleted.");
                     gameTimer.Stop();
-                    HideGameContent();
-                    ShowMainMenu();
+                    uiManager.HideGameContent();
+                    uiManager.ShowMainMenu();
                 }
                 else
                 {
@@ -570,7 +404,7 @@ namespace paper_maze
             }
         }
 
-        private void HudUpdate()
+        public void HudUpdate()
         {
             label1.Text = $"Coins: {coinsCollected} | Health: {playerHealth}";
         }
@@ -587,7 +421,7 @@ namespace paper_maze
             DrawMaze();
         }
 
-        private void BackgroundColorChangeTimer_Tick(object sender, EventArgs e)
+        public void BackgroundColorChangeTimer_Tick(object sender, EventArgs e)
         {
 
             int currentR = this.BackColor.R;
@@ -612,42 +446,34 @@ namespace paper_maze
 
         private void WallColorChangeTimer_Tick(object sender, EventArgs e)
         {
-            if (isTakingDamage)
+            if (isTakingDamage) // go to red
             {
-                // Плавное изменение цвета к красному
                 colorWall = Color.FromArgb(
-                    Math.Min(colorWall.R + (int)(damageColorIntensity * damageColorStrenght), damageColorTargetRed),
+                    Math.Min(colorWall.R + (int)(_damageColorIntensity * damageColorStrenght), _damageColorTargetRed),
                     colorWall.G,
                     colorWall.B
                 );
 
-                // Если цвет достиг цели, остановить таймер
-                if (colorWall.R == damageColorTargetRed)
-                {
+                if (colorWall.R == _damageColorTargetRed)
                     isTakingDamage = false;
-                }
             }
-            else
+            else // go to initialColor
             {
-                // Плавное изменение цвета к исходному
                 colorWall = Color.FromArgb(
-                    Math.Max(colorWall.R - (int)(damageColorIntensity * damageColorStrenght), initialWallColor.R),
+                    Math.Max(colorWall.R - (int)(_damageColorIntensity * damageColorStrenght), _initialWallColor.R),
                     colorWall.G,
                     colorWall.B
                 );
 
-                // Если цвет вернулся к исходному, остановить таймер
-                if (colorWall.R == initialWallColor.R)
-                {
+                if (colorWall.R == _initialWallColor.R)
                     wallColorChangeTimer.Stop();
                 }
-            }
-        }
-
+                }
+        
 
 
         //============================= Render ===============================
-        private void DrawMaze()
+        public void DrawMaze()
         {
             Bitmap bitmap = new Bitmap(maze.GetLength(1) * cellSize, maze.GetLength(0) * cellSize);
             using (Graphics g = Graphics.FromImage(bitmap))
@@ -713,11 +539,11 @@ namespace paper_maze
             return t * t * (3 - 2 * t);
         }
 
-        private void SmoothBackgroundColorTransition(Color targetColor)
+        public void SmoothBackgroundColorTransition(Color targetColor)
         {
             this.targetColor = targetColor;
             colorChangeTimer.Start();
         }
-
     }
 }
+
